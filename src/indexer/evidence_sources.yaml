@@ -1,0 +1,18 @@
+sources:
+  - name: IGN
+    url: "https://www.ign.com/feed.xml"
+
+  - name: Polygon
+    url: "https://www.polygon.com/rss/index.xml"
+
+  - name: PCGamer
+    url: "https://www.pcgamer.com/rss/"
+
+  - name: Eurogamer
+    url: "https://www.eurogamer.net/feed"
+
+  - name: GameSpot
+    url: "https://www.gamespot.com/feeds/news/"
+
+  - name: Steam
+    url: "https://store.steampowered.com/feeds/news.xml"
