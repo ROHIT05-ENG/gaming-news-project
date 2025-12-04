@@ -34,4 +34,4 @@ jobs:
           git config --global user.email "github-actions@github.com"
           git add data/evidence/evidence_raw.csv data/evidence/evidence_clean.csv || true
           git commit -m "Auto-update evidence" || echo "No changes to commit"
-          git pushs
+          git push
