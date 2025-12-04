@@ -1,0 +1,34 @@
+name: Rebuild FAISS Index Daily
+
+on:
+  schedule:
+    - cron: "0 1 * * *"   # runs daily at 01:00 UTC
+  workflow_dispatch:      # manual run button
+
+jobs:
+  build-faiss:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repo
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Dependencies
+        run: |
+          pip install -r requirements.txt
+          pip install faiss-cpu sentence-transformers numpy==1.26.4
+
+      - name: Run FAISS Index Builder
+        run: |
+          python src/indexer/faiss_indexer.py
+
+      - name: Upload Updated Index Files
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "Auto-update FAISS index"
+          file_pattern: data/index/*
