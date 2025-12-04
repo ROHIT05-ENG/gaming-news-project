@@ -2,17 +2,16 @@ name: Daily Evidence Collector
 
 on:
   schedule:
-    - cron: "0 2 * * *"   # runs daily at 02:00 UTC; change if you need another time
-  workflow_dispatch:      # allows manual run
+    - cron: "0 */12 * * *"   # runs every 12 hours
+  workflow_dispatch:
 
 jobs:
   crawl-and-clean:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-        with:
-          persist-credentials: true
 
       - name: Set up Python
         uses: actions/setup-python@v4
@@ -22,18 +21,17 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install requests beautifulsoup4 pyyaml
+          pip install -r requirements.txt
 
-      - name: Run crawler
-        run: python src/indexer/crawl_whitelist.py
-
-      - name: Run cleaner
-        run: python src/indexer/clean_evidence.py
+      - name: Run crawler and cleaner
+        run: |
+          python src/indexer/crawl_whitelist.py
+          python src/indexer/clean_evidence.py
 
       - name: Commit CSV updates
         run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add data/evidence/*.csv
-          git commit -m "Daily evidence update" || echo "No changes to commit"
-          git push
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          git add data/evidence/evidence_raw.csv data/evidence/evidence_clean.csv || true
+          git commit -m "Auto-update evidence" || echo "No changes to commit"
+          git pushs
